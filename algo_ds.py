@@ -4,6 +4,8 @@
 #4 сортировка слиянием - потому что быстрее пузырька и красивая рекурсия
 #5 очередь с приоритетом - потому что heapq не всегда очевидна
 #6 алгоритм A* для поиска пути - потому что игры тоже хотят находить пути
+#7 обход графа в ширину (BFS) - потому что иногда нужно идти по уровням
+# алгоритм Крускала для минимального остовного дерева - потому что сети должны быть связными
 
 #9алгоритм Косарайю для поиска сильно связных компонент - потому что графы бывают разными
 
@@ -272,12 +274,14 @@ def manhattan(a, b):
     return abs(ord(a) - ord(b))  #эвристика
 
 path = a_star('A', 'E', grid_graph, manhattan)
-print("Найденный путь A*:", path)  # ['A', 'D', 'E']
+print("Найденный путь A*:", path) 
 # print(a_star('B', 'E', grid_graph, manhattan))  
 
 print("\n-----------------------------------------------------------------------7-----")
-# обход графа в ширину (BFS) - потому что иногда нужно идти по уровням
-from collections import deque  #двусторонняя очередь для эффективности
+
+from collections import deque  
+#двусторонняя очередь для эффективности
+
 
 def bfs(graph, start):
     """обход графа в ширину"""
@@ -305,3 +309,66 @@ graph = {
     'E': ['B', 'F'],
     'F': ['C', 'E']
 }
+
+print("Обход графа в ширину (BFS):")
+print(bfs(graph, 'A'))  
+# print(bfs(graph, 'C'))  
+
+print("\n-----------------------------------------------------------------------8-----")
+class DisjointSet:
+    """система непересекающихся множеств для Крускала"""
+    def __init__(self, vertices):
+        self.parent = {v: v for v in vertices}
+        self.rank = {v: 0 for v in vertices}
+    
+    def find(self, item):
+        """находим корень множества"""
+        if self.parent[item] != item:
+            self.parent[item] = self.find(self.parent[item])  
+            # path compression
+
+        return self.parent[item]
+    
+    def union(self, set1, set2):
+        """объединяем два множества"""
+        root1 = self.find(set1)
+        root2 = self.find(set2)
+        if root1 != root2:
+            if self.rank[root1] > self.rank[root2]:
+                self.parent[root2] = root1
+            else:
+                self.parent[root1] = root2
+                if self.rank[root1] == self.rank[root2]:
+                    self.rank[root2] += 1
+
+def kruskal(graph):
+    """алгоритм Крускала для минимального остовного дерева"""
+    edges = []
+    for u in graph:
+        for v, weight in graph[u].items():
+            edges.append((weight, u, v))
+    edges.sort()  # сортируем ребра по весу
+    
+    vertices = set(graph.keys())
+    ds = DisjointSet(vertices)
+    mst = []
+    
+    for edge in edges:
+        weight, u, v = edge
+        if ds.find(u) != ds.find(v):
+            ds.union(u, v)
+            mst.append(edge)
+    
+    return mst
+
+# пример графа
+graph = {
+    'A': {'B': 2, 'D': 6},
+    'B': {'A': 2, 'C': 3, 'D': 8, 'E': 5},
+    'C': {'B': 3, 'E': 7},
+    'D': {'A': 6, 'B': 8, 'E': 9},
+    'E': {'B': 5, 'C': 7, 'D': 9}
+}
+
+print("Минимальное остовное дерево (Крускал):")
+print(kruskal(graph))  
