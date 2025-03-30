@@ -3,6 +3,7 @@
 #3 алгоритм Дейкстры для поиска кратчайшего пути - потому что GPS тоже чем-то пользуется
 #4 сортировка слиянием - потому что быстрее пузырька и красивая рекурсия
 #5 очередь с приоритетом - потому что heapq не всегда очевидна
+#6 алгоритм A* для поиска пути - потому что игры тоже хотят находить пути
 
 #9алгоритм Косарайю для поиска сильно связных компонент - потому что графы бывают разными
 
@@ -221,3 +222,86 @@ print(pq)
 print("Обрабатываем задачи по приоритету:")
 # print(pq.pop())  #task4
 # print(pq.pop())  #task1
+
+print("\n-----------------------------------------------------------------------6-----")
+def a_star(start, goal, graph, heuristic):
+    """алгоритм A* для поиска кратчайшего пути"""
+    open_set = {start}
+    came_from = {}
+    g_score = {vertex: float('infinity') for vertex in graph}
+    g_score[start] = 0
+    f_score = {vertex: float('infinity') for vertex in graph}
+    f_score[start] = heuristic(start, goal)
+    
+    while open_set:
+        current = min(open_set, key=lambda vertex: f_score[vertex])
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            return path
+        
+        open_set.remove(current)
+        for neighbor in graph[current]:
+            tentative_g_score = g_score[current] + graph[current][neighbor]
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, goal)
+                if neighbor not in open_set:
+                    open_set.add(neighbor)
+    
+    return None  # если путь не найден
+
+
+
+
+grid_graph = {
+    'A': {'B': 1, 'D': 3},
+    'B': {'A': 1, 'C': 2, 'D': 4},
+    'C': {'B': 2, 'D': 1, 'E': 5},
+    'D': {'A': 3, 'B': 4, 'C': 1, 'E': 1},
+    'E': {'C': 5, 'D': 1}
+}
+
+def manhattan(a, b):
+    """манхэттенское расстояние между узлами"""
+    return abs(ord(a) - ord(b))  #эвристика
+
+path = a_star('A', 'E', grid_graph, manhattan)
+print("Найденный путь A*:", path)  # ['A', 'D', 'E']
+# print(a_star('B', 'E', grid_graph, manhattan))  
+
+print("\n-----------------------------------------------------------------------7-----")
+# обход графа в ширину (BFS) - потому что иногда нужно идти по уровням
+from collections import deque  #двусторонняя очередь для эффективности
+
+def bfs(graph, start):
+    """обход графа в ширину"""
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+    result = []
+    
+    while queue:
+        vertex = queue.popleft()
+        result.append(vertex)
+        for neighbor in graph[vertex]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    
+    return result
+
+#граф (не взвешенный)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
