@@ -7,10 +7,12 @@ class Queue:
     
     def enqueue(self, item):
         """Добавляем элемент в конец очереди"""
+       
         self.items.append(item)  # Просто добавляем в конец списка
     
     def dequeue(self):
         """Забираем элемент из начала очереди"""
+
         if not self.is_empty():
             return self.items.pop(0)  # Удаляем и возвращаем первый элемент
         else:
@@ -19,6 +21,7 @@ class Queue:
     
     def is_empty(self):
         """Проверяем, пустая ли очередь"""
+
         return len(self.items) == 0
     
     def size(self):
@@ -26,11 +29,13 @@ class Queue:
         return len(self.items)
     
     def front(self):
+
         """Смотрим, кто первый в очереди, но не обслуживаем"""
         if not self.is_empty():
             return self.items[0]
         else:
             print("Очередь пуста!")
+
             return None
 
 #очередь на печать
