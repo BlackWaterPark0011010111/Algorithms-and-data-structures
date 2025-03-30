@@ -5,9 +5,10 @@
 #5 очередь с приоритетом - потому что heapq не всегда очевидна
 #6 алгоритм A* для поиска пути - потому что игры тоже хотят находить пути
 #7 обход графа в ширину (BFS) - потому что иногда нужно идти по уровням
-# алгоритм Крускала для минимального остовного дерева - потому что сети должны быть связными
+#8 алгоритм Крускала для минимального остовного дерева - потому что сети должны быть связными
+#9 алгоритм Флойда-Уоршелла для всех кратчайших путей - потому что иногда нужно знать всё
 
-#9алгоритм Косарайю для поиска сильно связных компонент - потому что графы бывают разными
+#10 алгоритм Косарайю для поиска сильно связных компонент - потому что графы бывают разными
 
 
 print("\n-----------------------------------------------------------------------1-----")
@@ -347,7 +348,8 @@ def kruskal(graph):
     for u in graph:
         for v, weight in graph[u].items():
             edges.append((weight, u, v))
-    edges.sort()  # сортируем ребра по весу
+    edges.sort()  
+# сортируем ребра по весу
     
     vertices = set(graph.keys())
     ds = DisjointSet(vertices)
@@ -372,3 +374,115 @@ graph = {
 
 print("Минимальное остовное дерево (Крускал):")
 print(kruskal(graph))  
+
+print("\n-----------------------------------------------------------------------9-----")
+def floyd_warshall(graph):
+    """алгоритм Флойда-Уоршелла для всех пар кратчайших путей"""
+    vertices = list(graph.keys())
+    n = len(vertices)
+    dist = [[float('infinity')] * n for _ in range(n)]
+    
+    #матрица расстояний
+    for i in range(n):
+        dist[i][i] = 0
+    for u in graph:
+        for v in graph[u]:
+            i = vertices.index(u)
+            j = vertices.index(v)
+            dist[i][j] = graph[u][v]
+    
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    
+    return {vertices[i]: {vertices[j]: dist[i][j] for j in range(n)} for i in range(n)}
+
+graph = {
+    'A': {'B': 3, 'C': 8, 'E': -4},
+    'B': {'D': 1, 'E': 7},
+    'C': {'B': 4},
+    'D': {'A': 2, 'C': -5},
+    'E': {'D': 6}
+}
+
+print("Все кратчайшие пути (Флойд-Уоршелл):")
+result = floyd_warshall(graph)
+for u in result:
+    print(f"{u}: {result[u]}")
+# вывод --- матрица кратчайших расстояний между всеми парами вершин
+
+print("\n----------------------------------------------------------------------10-----")
+def kosaraju(graph):
+    """алгоритм Косарайю для сильно связных компонент"""
+    visited = set()
+    order = []
+    
+    def dfs(node):    #первый проход (прямой граф)
+        stack = [(node, False)]
+        while stack:
+            n, processed = stack.pop()
+            if processed:
+                order.append(n)
+                continue
+            if n in visited:
+                continue
+            visited.add(n)
+            stack.append((n, True))
+            for neighbor in graph.get(n, []):
+                stack.append((neighbor, False))
+    
+    for node in graph:
+        if node not in visited:
+            dfs(node)
+    
+    reversed_graph = {}#обратный граф
+    for node in graph:
+        for neighbor in graph[node]:
+            if neighbor not in reversed_graph:
+                reversed_graph[neighbor] = []
+            reversed_graph[neighbor].append(node)
+    
+#второй проход (обратный граф)
+    visited = set()
+    components = []
+    
+    while order:
+        node = order.pop()
+        if node not in visited:
+            stack = [node]
+            visited.add(node)
+            component = []
+            while stack:
+                n = stack.pop()
+                component.append(n)
+                for neighbor in reversed_graph.get(n, []):
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        stack.append(neighbor)
+            components.append(component)
+    
+    return components
+
+#пример графа
+graph = {
+    'A': ['B'],
+    'B': ['C', 'D'],
+    'C': ['A'],
+    'D': ['E'],
+    'E': ['F'],
+    'F': ['D'],
+    'G': ['F', 'H'],
+    'H': ['I'],
+    'I': ['J'],
+    'J': ['G', 'K'],
+    'K': []
+}
+
+print("Сильно связные компоненты (Косарайю):")
+print(kosaraju(graph))  
+### [['A', 'C', 'B'], ['D', 'F', 'E'], ['G', 'J', 'I', 'H'], ['K']]
+
+print("\n----------------------------------------------------------------------------")
+        
