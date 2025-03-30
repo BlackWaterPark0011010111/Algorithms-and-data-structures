@@ -2,6 +2,7 @@
 #2 бинарное дерево поиска (BST) - потому что деревья это красиво
 #3 алгоритм Дейкстры для поиска кратчайшего пути - потому что GPS тоже чем-то пользуется
 #4 сортировка слиянием - потому что быстрее пузырька и красивая рекурсия
+#5 очередь с приоритетом - потому что heapq не всегда очевидна
 
 #9алгоритм Косарайю для поиска сильно связных компонент - потому что графы бывают разными
 
@@ -164,3 +165,59 @@ def merge_sort(arr):
         merge_sort(left)  # сортировка левую
         merge_sort(right)  # сортировка правую
         
+        # слияние двух отсортированных половин
+        i = j = k = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                arr[k] = left[i]
+                i += 1
+            else:
+                arr[k] = right[j]
+                j += 1
+            k += 1
+#добавляем оставшиеся элементы
+        while i < len(left):
+            arr[k] = left[i]
+            i += 1
+            k += 1
+        while j < len(right):
+            arr[k] = right[j]
+            j += 1
+            k += 1
+
+data = [12, 11, 13, 5, 6, 7]
+print("Исходный массив:", data)
+merge_sort(data)
+print("Отсортированный массив:", data)  # [5, 6, 7, 11, 12, 13]
+
+print("\n-----------------------------------------------------------------------5-----")
+class PriorityQueue:
+    """наша собственная очередь с приоритетами"""
+    def __init__(self):
+        self._heap = []
+        self._index = 0  # для обработки с одинаковым приоритетом
+    
+    def push(self, item, priority):
+        """добавляем элемент с приоритетом"""
+        heapq.heappush(self._heap, (-priority, self._index, item))
+        self._index += 1
+    
+    def pop(self):
+        """извлекаем элемент с наивысшим приоритетом"""
+        return heapq.heappop(self._heap)[-1]
+    
+    def __str__(self):
+        return str([(item, -priority) for priority, _, item in sorted(self._heap)])
+
+pq = PriorityQueue()
+pq.push("task1", 3)
+pq.push("task2", 1)
+pq.push("task3", 2)
+pq.push("task4", 5)
+
+print("Очередь с приоритетами:")
+print(pq)  
+# [('task4', 5), ('task1', 3), ('task3', 2), ('task2', 1)]
+print("Обрабатываем задачи по приоритету:")
+# print(pq.pop())  #task4
+# print(pq.pop())  #task1
