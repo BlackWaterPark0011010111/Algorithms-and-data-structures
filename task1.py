@@ -1,23 +1,19 @@
+# linear search
+# you're searching for keys in a dark room - you just feel around the table with your hands
+# until you find the right set. That's how this algorithm works!
 
-# Представь, что ты ищешь ключи в темной комнате - ты просто шаришь руками по столу,
-# Привет! Это мой первый алгоритм - линейный поиск.
-# пока не нащупаешь нужную связку. 
-# Вот так и этот алгоритм!
-
+"""
+    Simplest search: check each item one by one
+    items - list to search in
+    target - what we're looking for
+    """
 def linear_search(items, target):
-    """
-    Простейший поиск: проверяем каждый элемент по очереди
-    items - список, в котором ищем
-    target - что ищем
-    """
     for i in range(len(items)):
-        if items[i] == target: 
-            return i  # Возвращаем индекс, где нашли элемент
-    return -1 
- # Если ничего не нашли, возвращаем -1 (как "не найдено")
+        if items[i] == target:  # found it
+            return i  # return the index where we found the item
+    return -1  # if nothing found, return -1 as not found
 
-#тест
-my_stuff = ["телефон", "ключи", "кошелек", "очки"]
-where_keys = linear_search(my_stuff, "ключи")
+my_stuff = ["phone", "keys", "wallet", "glasses"]
+where_keys = linear_search(my_stuff, "keys")
 
-print(f"Ключи лежат на {where_keys+1}-м месте в списке")  # +1 потому что считаем с 1, а не с 0
+print(f"Keys are in position {where_keys+1} in the list")  # +1 because we count from 1, not 0

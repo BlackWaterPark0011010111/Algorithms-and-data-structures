@@ -1,31 +1,28 @@
-#Окей, линейный поиск - это как искать в темноте, а бинарный - уже с фонариком!
-# Но есть условие: список должен быть отсортирован. Как в телефонной книге.
+# Okay, linear search is like searching in the dark, but binary search is like using a flashlight!
+# But there's a condition: the list must be sorted. Like in a phone book.
 
 def binary_search(sorted_list, target):
-    """
-    Бинарный поиск - делим список пополам и отбрасываем ненужную часть
-    """
-    left = 0  # Левая граница поиска
-    right = len(sorted_list) - 1  # Правая граница
+    """Binary search - we divide the list in half and discard the unnecessary part"""
+    left = 0  # Left search boundary
+    right = len(sorted_list) - 1  #Right boundary
     
     while left <= right:
-        middle = (left + right) // 2  # середина
+        middle = (left + right) // 2  # middle point
         
         if sorted_list[middle] == target:
-            return middle  #находим
+            return middle  # found it
         elif sorted_list[middle] < target:
-            left = middle + 1  #ищем в правой половине
+            left = middle + 1  #search in right half
         else:
-            right = middle - 1  #ищем в левой половине
+            right = middle - 1  #search in left half
     
-    return -1  # ничего не нашли
+    return -1  # nothing found
 
-# ищем страницу в книге
-book_pages = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+book_pages = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]#searching for a page in a book
 page = 70
 result = binary_search(book_pages, page)
 
 if result != -1:
-    print(f"Страница {page} найдена на позиции {result}")
+    print(f"Page {page} found at position {result}")
 else:
-    print("Такой страницы нет в книге :(")
+    print("This page doesn't exist in the book :(")
