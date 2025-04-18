@@ -43,7 +43,7 @@ printer_queue = Queue()
 
 printer_queue.enqueue("Отчет.xlsx")        #документы на печать
 printer_queue.enqueue("Презентация.pptx")
-printer_queue.enqueue("Фото котика.jpg")
+printer_queue.enqueue("Фото_котика.jpg")
 
 print(f"Сейчас печатается: {printer_queue.front()}")
 
