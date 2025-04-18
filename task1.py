@@ -16,4 +16,4 @@ def linear_search(items, target):
 my_stuff = ["phone", "keys", "wallet", "glasses"]
 where_keys = linear_search(my_stuff, "keys")
 
-print(f"Keys are in position {where_keys+1} in the list")  # +1 because we count from 1, not 0
+print(f"Keys are in position {where_keys+1} in the list")  # +1 because we count from 1, not 0 
