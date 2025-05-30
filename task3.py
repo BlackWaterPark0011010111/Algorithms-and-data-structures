@@ -6,8 +6,7 @@ class Node:
     """Это один 'вагон' нашего поезда-списка"""
     def __init__(self, data):
         self.data = data  #здесь храним данные
-        self.next = None  
-        #здесь - ссылку на следующий узел
+        self.next = None   
 
 class LinkedList:
     """Сам 'поезд' - связный список"""
@@ -36,7 +35,6 @@ class LinkedList:
             current = current.next
         print("None")  #конец списка
 
-# Создаем поезд-список
 my_train = LinkedList()
 my_train.add_node("Локомотив")
 my_train.add_node("Вагон с углем")
